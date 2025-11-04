@@ -1,8 +1,7 @@
 import os
 import csv
-from typing import List, Dict, Optional
 
-def get_csv_files(base_path: str = "Supermercado") -> Dict[str, str]:
+def get_csv_files(base_path="Supermercado"):
     """
     Obtiene todos los archivos CSV en la estructura jerárquica del supermercado
     Retorna un diccionario con la ruta relativa como clave y la ruta completa del archivo como valor
@@ -23,7 +22,7 @@ def get_csv_files(base_path: str = "Supermercado") -> Dict[str, str]:
     
     return csv_files
 
-def mostrar_categorias(csv_files: Dict[str, str]) -> None:
+def mostrar_categorias(csv_files):
     """Muestra las categorías disponibles en forma jerárquica.
     Recibe un diccionario cuya clave es la ruta relativa desde la carpeta base
     y el valor es la ruta completa al archivo CSV.
@@ -41,7 +40,7 @@ def mostrar_categorias(csv_files: Dict[str, str]) -> None:
             display = ' -> '.join(niveles)
         print(f"{i}. {display}")
 
-def seleccionar_categoria(csv_files: Dict[str, str]) -> Optional[str]:
+def seleccionar_categoria(csv_files):
     """Permite al usuario seleccionar una categoría y retorna la clave (ruta relativa)."""
     if not csv_files:
         print("No hay categorías disponibles.")
@@ -58,7 +57,7 @@ def seleccionar_categoria(csv_files: Dict[str, str]) -> Optional[str]:
         print("Opción inválida")
     return None
 
-def leer_csv(archivo: str) -> List[Dict]:
+def leer_csv(archivo):
     """Lee un archivo CSV y retorna una lista de diccionarios"""
     if not os.path.exists(archivo):
         return []
@@ -70,7 +69,7 @@ def leer_csv(archivo: str) -> List[Dict]:
         print(f"Error al leer el archivo: {e}")
         return []
 
-def escribir_csv(archivo: str, datos: List[Dict], campos: List[str]) -> None:
+def escribir_csv(archivo, datos, campos):
     """Escribe datos en un archivo CSV"""
     try:
         with open(archivo, 'w', newline='', encoding='utf-8') as f:
@@ -80,7 +79,7 @@ def escribir_csv(archivo: str, datos: List[Dict], campos: List[str]) -> None:
     except Exception as e:
         print(f"Error al escribir el archivo: {e}")
 
-def alta_item(csv_files: Dict[str, str]) -> None:
+def alta_item(csv_files):
     """Añade un nuevo item al CSV seleccionado"""
     categoria = seleccionar_categoria(csv_files)
     if not categoria:
@@ -106,7 +105,7 @@ def alta_item(csv_files: Dict[str, str]) -> None:
     escribir_csv(archivo, datos, campos)
     print("Item agregado exitosamente")
 
-def mostrar_items(csv_files: Dict[str, str], filtrado: bool = False) -> None:
+def mostrar_items(csv_files, filtrado=False):
     """Muestra los items de la categoría seleccionada (o filtrados)."""
     categoria = seleccionar_categoria(csv_files)
     if not categoria:
@@ -132,7 +131,7 @@ def mostrar_items(csv_files: Dict[str, str], filtrado: bool = False) -> None:
         print(row)
     print("-" * len(header_str))
 
-def modificar_item(csv_files: Dict[str, str]) -> None:
+def modificar_item(csv_files):
     """Modifica un item existente en el CSV seleccionado."""
     categoria = seleccionar_categoria(csv_files)
     if not categoria:
@@ -167,7 +166,7 @@ def modificar_item(csv_files: Dict[str, str]) -> None:
     else:
         print("ID no encontrado")
 
-def eliminar_item(csv_files: Dict[str, str]) -> None:
+def eliminar_item(csv_files):
     """Elimina un item existente en el CSV seleccionado."""
     categoria = seleccionar_categoria(csv_files)
     if not categoria:
