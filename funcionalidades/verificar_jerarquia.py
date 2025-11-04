@@ -1,12 +1,12 @@
 import os
 
-RUTA_BASE = "supermercado"
+RUTA_BASE = "Supermercado"
 
 estructura = {
-    "alimentos": {"lacteos": ("enteros", "descremados"), 
-                    "cereales": ("avena", "maiz")},
-    "bebidas": {"jugos": ("naturales", "artificiales"),
-                "gaseosas": ("regular", "zero")},
+    "Alimentos": {"Lacteos": ("Enteros", "Descremados"), 
+                    "Cereales": ("Avena", "Maiz")},
+    "Bebidas": {"Jugos": ("Naturales", "Artificiales"),
+                "Gaseosas": ("Regular", "Zero")},
 }
 
 def verificar_existencia(ruta: str, subestructura: dict) -> None:
