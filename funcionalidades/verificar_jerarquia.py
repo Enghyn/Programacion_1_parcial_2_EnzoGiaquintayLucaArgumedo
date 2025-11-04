@@ -2,26 +2,34 @@ import os
 
 RUTA_BASE = "supermercado"
 
-def verificar_existencia(ruta:str) -> None:
-    estructura = [{"supermercado": ("alimentos", "bebidas", "limpeza")},
-        {"alimentos": ("lacteos", "cereales")},
-        {"bebidas": ("jugos", "gaseosas")},
-        {"limpieza": ("detergentes", "desinfectantes")}
-    ]
+estructura = {
+    "supermercado": {
+        "alimentos": {"lacteos": ("enteros", "descremados"), 
+                      "cereales": ("avena", "maiz")},
+        "bebidas": {"jugos": ("naturales", "artificiales"),
+                    "gaseosas": ("regular", "zero")},
+    }
+}
 
-    if os.path.exists(ruta):
-        print(f"Existe carpeta {ruta}")
-        carpetas_ruta = list(os.scandir(ruta))
-        if carpetas_ruta:
-            for subcarpeta in estructura:
-                verificar_existencia(f"{RUTA_BASE}/{subcarpeta}")
+def verificar_existencia(ruta: str, subestructura: dict) -> None:
+    """Verifica recursivamente la existencia de carpetas."""
+    if not os.path.exists(ruta):
+        print(f"No existe carpeta: {ruta}")
+        return
     
-    else:
-        print(f"No existe carpeta {ruta}")
+    print(f"Existe carpeta: {ruta}")
+
+    # Recorre los subniveles (si los hay)
+    for carpeta, subcarpetas in subestructura.items():
+        for sub in subcarpetas:
+            nueva_ruta = os.path.join(ruta, carpeta, sub)
+            if os.path.exists(nueva_ruta):
+                print(f"Existe {nueva_ruta}")
+            else:
+                print(f"Falta {nueva_ruta}")
 
 def main():
-    verificar_existencia(RUTA_BASE)
-    
+    verificar_existencia(RUTA_BASE, estructura)
 
 if __name__ == "__main__":
     main()
