@@ -3,7 +3,7 @@ import os
 RUTA_BASE = "Supermercado"
 
 estructura = {
-    "Alimentos": {"Lacteos": ("Enteros", "Descremados"), 
+    "Alimentos": {"Lacteos": ("Entero", "Descremado"), 
                     "Cereales": ("Avena", "Maiz")},
     "Bebidas": {"Jugos": ("Naturales", "Artificiales"),
                 "Gaseosas": ("Regular", "Zero")},
