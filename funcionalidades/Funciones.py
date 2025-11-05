@@ -126,7 +126,7 @@ def alta_item(estructura):
     ultimo_id = int(datos[-1]["ID"])
 
     nuevo_id = str(ultimo_id + 1)
-    nombre = ingresar_texto()
+    nombre = ingresar_texto("Ingrese nombre del producto: ")
     precio = ingresar_numero("precio")
     stock = ingresar_numero("stock")
     nuevo_item = {
@@ -150,7 +150,7 @@ def mostrar_items(estructura, filtrado=False):
         return
 
     if filtrado:
-        filtro = input("Ingrese texto para filtrar por nombre: ").lower()
+        filtro = ingresar_texto("Ingrese texto para filtrar por nombre: ").lower()
         productos = [
             item for item in productos
             if filtro in item.get('Nombre', '').lower()

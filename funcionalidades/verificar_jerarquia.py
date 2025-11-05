@@ -1,8 +1,7 @@
 import os
 import csv
-from config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
-
-from validar_inputs import texto_correcto, numero_correcto
+from .config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
+from .validar_inputs import texto_correcto, numero_correcto
 
 #Estructura inicial mínima, en caso de que no existan subcarpetas
 ESTRUCTURA_INICIAL = {

@@ -1,9 +1,4 @@
-from funcionalidades.funciones import (
-    alta_item,
-    mostrar_items,
-    modificar_item,
-    eliminar_item
-)
+from funcionalidades.funciones import alta_item, mostrar_items, modificar_item, eliminar_item
 from funcionalidades.verificar_jerarquia import iniciar_verificacion
 from funcionalidades.lectura_recursiva import iniciar_lectura
 
@@ -21,6 +16,7 @@ def main():
         print("5. Eliminar item")
         print("6. Salir")
         
+        #Se carga la estructura de archivos csv que hay en ese momento
         archivos_csv = iniciar_lectura()
 
         #Opciónes de navegación

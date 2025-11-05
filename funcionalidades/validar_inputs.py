@@ -6,10 +6,10 @@ def texto_correcto(texto: str) -> bool:
 def numero_correcto(valor: str) -> bool:
     return valor.isdigit() and int(valor) >= 0
 
-def ingresar_texto() -> str:
+def ingresar_texto(texto_mostrar:str) -> str:
     while True:
         try:
-            texto = input("Ingrese nombre del producto: ")
+            texto = input(texto_mostrar)
             if texto_correcto(texto):
                 return texto
             else:

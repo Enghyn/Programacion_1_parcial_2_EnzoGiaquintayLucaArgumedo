@@ -1,6 +1,6 @@
 import os
 import csv
-from config import RUTA_BASE, NOMBRE_CSV
+from .config import RUTA_BASE, NOMBRE_CSV
 
 
 #Lee un archivo CSV y devuelve una lista de diccionarios
