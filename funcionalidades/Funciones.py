@@ -4,28 +4,7 @@ from lectura_recursiva import iniciar_lectura
 from config import NOMBRE_CSV, ENCABEZADOS, RUTA_BASE
 from validar_inputs import ingresar_texto, ingresar_numero
 
-productos = iniciar_lectura()
-
-# def obtener_csv(ruta_base="Supermercado"):
-#     """
-#     Obtiene todos los archivos CSV en la estructura jerárquica del supermercado
-#     Retorna un diccionario con la ruta relativa como clave y la ruta completa del archivo como valor
-#     """
-#     archivos_csv = {}
-    
-#     if not os.path.exists(ruta_base):
-#         os.makedirs(ruta_base)
-#         return archivos_csv
-    
-#     for root, _, files in os.walk(ruta_base):
-#         for file in files:
-#             if file.endswith('.csv'):
-#                 # Obtener la ruta relativa desde ruta_base
-#                 rel_path = os.path.relpath(root, ruta_base)
-#                 # Usar la ruta relativa como clave y la ruta completa como valor
-#                 archivos_csv[rel_path] = os.path.join(root, file)
-    
-#     return archivos_csv
+productos = iniciar_lectura() #solo para pruebas
 
 #Muestra las categorías y subcategorías disponibles de forma jerárquica
 #Recibe una lista de diccionarios anidados
