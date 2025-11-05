@@ -1,6 +1,8 @@
 import os
 import csv
 from lectura_recursiva import iniciar_lectura
+from config import NOMBRE_CSV
+
 productos = iniciar_lectura()
 
 # def obtener_csv(ruta_base="Supermercado"):
@@ -45,20 +47,23 @@ def seleccionar_categoria(estructura):
         print("No hay categorías disponibles.")
         return None
 
-    actual = estructura  # Nivel actual de navegación
-    ruta = []  # Guarda la ruta elegida, útil para mostrar el contexto
+    nivel_actual = estructura
+    ruta = []  # Guarda la ruta seleccionada como lista
 
     while True:
-        # Mostrar las categorías disponibles en este nivel
+        # Obtener las categorías del nivel actual
         opciones = []
-        for bloque in actual:
+        for bloque in nivel_actual:
             for nombre, contenido in bloque.items():
                 opciones.append((nombre, contenido))
+
+        if not opciones:
+            print("No hay más subcategorías.")
+            return "/".join(ruta) if ruta else None
 
         print("\nCategorías disponibles:")
         for i, (nombre, _) in enumerate(opciones, 1):
             print(f"{i}. {nombre}")
-
         print("0. Volver al nivel anterior" if ruta else "0. Salir")
 
         try:
@@ -67,35 +72,36 @@ def seleccionar_categoria(estructura):
             print("Opción inválida.")
             continue
 
+        # Opción salir / volver
         if opcion == 0:
             if ruta:
                 ruta.pop()  # Subir un nivel
-                # Reconstruir el nivel anterior desde la estructura original
-                actual = estructura
+                nivel_actual = estructura
                 for paso in ruta:
-                    for bloque in actual:
+                    for bloque in nivel_actual:
                         if paso in bloque:
                             contenido = bloque[paso]
-                            actual = (
+                            nivel_actual = (
                                 [{k: v} for k, v in contenido.items()]
                                 if isinstance(contenido, dict)
                                 else contenido
                             )
                             break
             else:
-                return None  # salir completamente
+                return None
             continue
 
         if 1 <= opcion <= len(opciones):
             nombre, contenido = opciones[opcion - 1]
             ruta.append(nombre)
             if isinstance(contenido, dict):
-                # Descender un nivel
-                actual = [{k: v} for k, v in contenido.items()]
+                # Bajar al siguiente nivel
+                nivel_actual = [{k: v} for k, v in contenido.items()]
             elif isinstance(contenido, list):
-                # Llegamos a una categoría final con ítems
-                print(f"\n📂 Categoría seleccionada: {' > '.join(ruta)}")
-                return contenido  # Devuelve la lista de ítems
+                # Llegamos al nivel final
+                ruta_relativa = os.path.join(*ruta, NOMBRE_CSV)
+                print(f"\nCategoría seleccionada: {ruta_relativa}")
+                return ruta_relativa
         else:
             print("Número fuera de rango.")
 

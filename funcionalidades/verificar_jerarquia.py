@@ -1,9 +1,6 @@
 import os
 import csv
-
-RUTA_BASE = "Supermercado"
-NOMBRE_CSV = "Productos.csv"
-ENCABEZADOS = ["ID", "Nombre", "Precio", "Stock"]
+from config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
 
 #Estructura inicial mínima, en caso de que no existan subcarpetas
 ESTRUCTURA_INICIAL = {"Supermercado":{"Alimentos":{"Cereales": ("Avena","Maiz")}}}

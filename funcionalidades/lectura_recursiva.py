@@ -1,8 +1,7 @@
 import os
 import csv
+from config import RUTA_BASE, NOMBRE_CSV
 
-RUTA_BASE = "Supermercado"
-NOMBRE_CSV = "Productos.csv"
 
 #Lee un archivo CSV y devuelve una lista de diccionarios
 def leer_csv(ruta_csv: str) -> list[dict]:
