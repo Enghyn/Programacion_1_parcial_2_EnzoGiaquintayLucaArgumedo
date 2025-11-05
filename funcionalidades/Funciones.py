@@ -1,8 +1,9 @@
 import os
 import csv
-from lectura_recursiva import iniciar_lectura
-from config import NOMBRE_CSV, ENCABEZADOS, RUTA_BASE
-from validar_inputs import ingresar_texto, ingresar_numero
+if not __name__ == "__main__":
+    from .lectura_recursiva import iniciar_lectura
+    from .config import NOMBRE_CSV, ENCABEZADOS, RUTA_BASE
+    from .validar_inputs import ingresar_texto, ingresar_numero
 
 productos = iniciar_lectura() #solo para pruebas
 
@@ -237,4 +238,7 @@ def main():
 
 
 if __name__ == "__main__":
+    from lectura_recursiva import iniciar_lectura
+    from config import NOMBRE_CSV, ENCABEZADOS, RUTA_BASE
+    from validar_inputs import ingresar_texto, ingresar_numero
     main()

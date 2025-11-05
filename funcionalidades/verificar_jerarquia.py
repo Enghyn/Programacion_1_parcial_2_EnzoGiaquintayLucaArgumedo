@@ -1,7 +1,8 @@
 import os
 import csv
-from .config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
-from .validar_inputs import texto_correcto, numero_correcto
+if not __name__ == "__main__":
+    from .config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
+    from .validar_inputs import texto_correcto, numero_correcto
 
 #Estructura inicial mínima, en caso de que no existan subcarpetas
 ESTRUCTURA_INICIAL = {
@@ -102,4 +103,7 @@ def main():
     iniciar_verificacion()
 
 if __name__ == "__main__":
+    from config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
+    from validar_inputs import texto_correcto, numero_correcto
+
     main()

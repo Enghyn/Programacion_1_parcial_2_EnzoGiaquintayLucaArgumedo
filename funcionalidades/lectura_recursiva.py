@@ -1,6 +1,7 @@
 import os
 import csv
-from config import RUTA_BASE, NOMBRE_CSV
+if not __name__ == "__main__":
+    from .config import RUTA_BASE, NOMBRE_CSV
 
 
 #Lee un archivo CSV y devuelve una lista de diccionarios
@@ -52,4 +53,5 @@ def main():
 
 
 if __name__ == "__main__":
+    from config import RUTA_BASE, NOMBRE_CSV
     main()
