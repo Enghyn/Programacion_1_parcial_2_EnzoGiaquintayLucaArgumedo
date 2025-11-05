@@ -97,6 +97,10 @@ Cada producto se almacena en archivos CSV con los siguientes campos:
 - Python 3.x
 - No se requieren bibliotecas externas adicionales
 
+## Enlaces
+
+- https://youtu.be/iwx1cqUalLM
+
 ## Notas Adicionales
 
 - El sistema verifica y crea automáticamente la estructura de carpetas si no existe
