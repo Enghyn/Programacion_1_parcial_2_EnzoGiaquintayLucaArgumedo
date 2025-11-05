@@ -2,8 +2,7 @@ from funcionalidades.funciones import (
     alta_item,
     mostrar_items,
     modificar_item,
-    eliminar_item,
-    #obtener_csv
+    eliminar_item
 )
 from funcionalidades.verificar_jerarquia import iniciar_verificacion
 from funcionalidades.lectura_recursiva import iniciar_lectura
@@ -22,20 +21,20 @@ def main():
         print("5. Eliminar item")
         print("6. Salir")
         
-        csv_files = iniciar_lectura()
+        archivos_csv = iniciar_lectura()
 
         #Opciónes de navegación
         match input("\nSeleccione una opción: "):
             case "1":
-                alta_item(csv_files)
+                alta_item(archivos_csv)
             case "2":
-                mostrar_items(csv_files)
+                mostrar_items(archivos_csv)
             case "3":
-                mostrar_items(csv_files, filtrado=True)
+                mostrar_items(archivos_csv, filtrado=True)
             case "4":
-                modificar_item(csv_files)
+                modificar_item(archivos_csv)
             case "5":
-                eliminar_item(csv_files)
+                eliminar_item(archivos_csv)
             case "6":
                 print("¡Hasta luego!")
                 break
