@@ -2,6 +2,8 @@ import os
 import csv
 from config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
 
+from validar_inputs import texto_correcto, numero_correcto
+
 #Estructura inicial mínima, en caso de que no existan subcarpetas
 ESTRUCTURA_INICIAL = {"Supermercado":{"Alimentos":{"Cereales": ("Avena","Maiz")}}}
 
@@ -20,14 +22,6 @@ def verificar_existencia_csv(ruta: str) -> None:
     else:
         crear_csv(ruta)
 
-#Valida que uan cadena de texto no este vacía
-def nombre_correcto(nombre: str) -> bool:
-    return bool(nombre.strip().replace(" ", ""))
-
-#Valida que una cadena de texto sea un entero positivo o 0
-def numero_correcto(valor: str) -> bool:
-    return valor.isdigit() and int(valor) >= 0
-
 #Verifica encabezados y datos numéricos válidos
 def validar_csv(ruta: str) -> None:
     try:
@@ -44,7 +38,7 @@ def validar_csv(ruta: str) -> None:
             #Valida cada linea, si el formato de valores es correcto
             for i, fila in enumerate(lector, start=2):
                 if (not numero_correcto(fila["ID"]) or
-                    not nombre_correcto(fila["Nombre"]) or
+                    not texto_correcto(fila["Nombre"]) or
                     not numero_correcto(fila["Precio"]) or
                     not numero_correcto(fila["Stock"])):
                     print(f"Línea {i} inválida en {ruta}")

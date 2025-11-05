@@ -1,7 +1,8 @@
 import os
 import csv
 from lectura_recursiva import iniciar_lectura
-from config import NOMBRE_CSV
+from config import NOMBRE_CSV, ENCABEZADOS, RUTA_BASE
+from validar_inputs import ingresar_texto, ingresar_numero
 
 productos = iniciar_lectura()
 
@@ -99,84 +100,94 @@ def seleccionar_categoria(estructura):
                 nivel_actual = [{k: v} for k, v in contenido.items()]
             elif isinstance(contenido, list):
                 # Llegamos al nivel final
-                ruta_relativa = os.path.join(*ruta, NOMBRE_CSV)
+                ruta_relativa = os.path.join(RUTA_BASE, *ruta, NOMBRE_CSV)
                 print(f"\nCategoría seleccionada: {ruta_relativa}")
                 return ruta_relativa
         else:
             print("Número fuera de rango.")
 
-
-def leer_csv(archivo):
-    """Lee un archivo CSV y retorna una lista de diccionarios"""
-    if not os.path.exists(archivo):
+#Busca en la estructura jerárquica la categoría indicada por ruta_relativa
+#retorna la lista de productos.
+def leer_csv(ruta):
+    if not os.path.exists(ruta):
         return []
     
+    productos = []
     try:
-        with open(archivo, 'r', newline='', encoding='utf-8') as f:
-            return list(csv.DictReader(f))
+        with open(ruta, "r", newline="", encoding="utf-8") as archivo:
+            lector = csv.DictReader(archivo)
+            
+            for producto in lector:
+                productos.append(producto)
+        return productos
+        
     except Exception as e:
-        print(f"Error al leer el archivo: {e}")
+        print(f"Error al leer el archivo '{ruta}': {e}")
         return []
 
-def escribir_csv(archivo, datos, campos):
-    """Escribe datos en un archivo CSV"""
+#Escribe una lista de diccionarios en el archivo CSV recibido.
+def escribir_csv(ruta, datos, campos):
     try:
-        with open(archivo, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=campos)
+        with open(ruta, "w", newline="", encoding="utf-8") as archivo:
+            writer = csv.DictWriter(archivo, fieldnames=campos)
             writer.writeheader()
             writer.writerows(datos)
+            print("Item agregado exitosamente")
     except Exception as e:
-        print(f"Error al escribir el archivo: {e}")
+        print(f"Error al escribir en el archivo '{ruta}': {e}")
 
-def alta_item(archivos_csv):
-    """Añade un nuevo item al CSV seleccionado"""
-    categoria = seleccionar_categoria(archivos_csv)
-    if not categoria:
+#Añade un nuevo producto dentro de la categoría seleccionada
+def alta_item(estructura):
+    ruta_csv = seleccionar_categoria(estructura)
+    if not ruta_csv:
         return
-    archivo = archivos_csv[categoria]
-    campos = ['ID', 'Nombre', 'Precio', 'Stock']
-    datos = leer_csv(archivo)
 
-    # Crear nuevo item
-    nuevo_id = str(len(datos) + 1)
-    nombre = input("Ingrese nombre del producto: ")
-    precio = input("Ingrese precio del producto: ")
-    stock = input("Ingrese stock del producto: ")
+    campos = ENCABEZADOS
+    datos = leer_csv(ruta_csv)
+    ultimo_id = int(datos[-1]["ID"])
 
+    nuevo_id = str(ultimo_id + 1)
+    nombre = ingresar_texto()
+    precio = ingresar_numero("precio")
+    stock = ingresar_numero("stock")
     nuevo_item = {
         'ID': nuevo_id,
         'Nombre': nombre,
         'Precio': precio,
         'Stock': stock
     }
-
     datos.append(nuevo_item)
-    escribir_csv(archivo, datos, campos)
-    print("Item agregado exitosamente")
+    escribir_csv(ruta_csv, datos, campos)
 
-def mostrar_items(archivos_csv, filtrado=False):
-    """Muestra los items de la categoría seleccionada (o filtrados)."""
-    categoria = seleccionar_categoria(archivos_csv)
-    if not categoria:
+#Muestra los productos de la categoría seleccionada (permite filtrar por nombre)
+def mostrar_items(estructura, filtrado=False):
+    ruta_csv = seleccionar_categoria(estructura)
+    if not ruta_csv:
         return
-    archivo = archivos_csv[categoria]
-    datos = leer_csv(archivo)
-    if not datos:
-        print("No hay productos en este archivo.")
+
+    productos = leer_csv(ruta_csv)
+    if not productos:
+        print("No hay productos en esta categoría.")
         return
 
     if filtrado:
         filtro = input("Ingrese texto para filtrar por nombre: ").lower()
-        datos = [item for item in datos if filtro in item.get('Nombre', '').lower()]
+        productos = [
+            item for item in productos
+            if filtro in item.get('Nombre', '').lower()
+        ]
+        if not productos:
+            print("No se encontraron productos que coincidan con el filtro.")
+            return
 
-    print(f"\nProductos en {categoria}:")
-    headers = list(datos[0].keys())
+    print(f"\nProductos en: {ruta_csv}")
+    headers = list(productos[0].keys())
     header_str = " | ".join(f"{h:^12}" for h in headers)
     print("-" * len(header_str))
     print(header_str)
     print("-" * len(header_str))
-    for item in datos:
-        row = " | ".join(f"{str(item.get(h,'')):^12}" for h in headers)
+    for item in productos:
+        row = " | ".join(f"{str(item.get(h, '')):^12}" for h in headers)
         print(row)
     print("-" * len(header_str))
 
@@ -243,7 +254,7 @@ def eliminar_item(archivos_csv):
         print("ID no encontrado")
 
 def main():
-    seleccionar_categoria(productos)
+    mostrar_items(productos)
 
 
 if __name__ == "__main__":
