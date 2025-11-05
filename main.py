@@ -1,13 +1,19 @@
-from funcionalidades.Funciones import (
+from funcionalidades.funciones import (
     alta_item,
     mostrar_items,
     modificar_item,
     eliminar_item,
-    get_csv_files
+    obtener_csv
+)
+from funcionalidades.verificar_jerarquia import (
+    iniciar_verificacion
 )
 
+#Menú de navegación del programa
 def main():
-    """Menú principal del programa"""
+    #Se hace una verificación iniciar de la estructura de carpetas
+    iniciar_verificacion()
+
     while True:
         print("\n=== SISTEMA DE GESTIÓN DE SUPERMERCADO ===")
         print("1. Alta de item")
@@ -17,8 +23,9 @@ def main():
         print("5. Eliminar item")
         print("6. Salir")
         
-        csv_files = get_csv_files()
-        
+        csv_files = obtener_csv()
+
+        #Opciónes de navegación
         match input("\nSeleccione una opción: "):
             case "1":
                 alta_item(csv_files)
