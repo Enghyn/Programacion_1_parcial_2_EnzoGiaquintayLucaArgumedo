@@ -5,8 +5,18 @@ from config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
 from validar_inputs import texto_correcto, numero_correcto
 
 #Estructura inicial mínima, en caso de que no existan subcarpetas
-ESTRUCTURA_INICIAL = {"Supermercado":{"Alimentos":{"Cereales": ("Avena","Maiz")}}}
-
+ESTRUCTURA_INICIAL = {
+    "Supermercado": {
+        "Alimentos": {
+            "Lácteos": ("Enteros", "Descremados"),
+            "Cereales": ("Avena", "Maiz")
+        },
+        "Bebidas": {
+            "Jugos": ("Naturales", "Artificiales"),
+            "Gaseosas": ("Regular", "Zero")
+        }
+    }
+}
 #Crea un archivo CSV con los encabezados básicos
 def crear_csv(ruta: str) -> None:
     with open(ruta, "w", newline="", encoding="utf-8") as archivo:
