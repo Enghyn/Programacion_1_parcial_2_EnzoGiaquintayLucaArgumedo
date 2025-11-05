@@ -3,6 +3,8 @@ from funcionalidades.Funciones import (
     mostrar_items,
     modificar_item,
     eliminar_item,
+    ordenar_items,
+    promedio_productos,
     get_csv_files
 )
 
@@ -15,8 +17,10 @@ def main():
         print("3. Mostrar items (filtrado)")
         print("4. Modificar item")
         print("5. Eliminar item")
-        print("6. Salir")
-        
+        print("6. Ordenar productos")
+        print("7. Promedio de productos")
+        print("8. Salir")
+
         csv_files = get_csv_files()
         
         match input("\nSeleccione una opción: "):
@@ -31,6 +35,10 @@ def main():
             case "5":
                 eliminar_item(csv_files)
             case "6":
+                ordenar_items(csv_files)
+            case "7":
+                promedio_productos(csv_files)
+            case "8":
                 print("¡Hasta luego!")
                 break
             case _:
