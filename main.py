@@ -3,11 +3,10 @@ from funcionalidades.funciones import (
     mostrar_items,
     modificar_item,
     eliminar_item,
-    obtener_csv
+    #obtener_csv
 )
-from funcionalidades.verificar_jerarquia import (
-    iniciar_verificacion
-)
+from funcionalidades.verificar_jerarquia import iniciar_verificacion
+from funcionalidades.lectura_recursiva import iniciar_lectura
 
 #Menú de navegación del programa
 def main():
@@ -23,7 +22,7 @@ def main():
         print("5. Eliminar item")
         print("6. Salir")
         
-        csv_files = obtener_csv()
+        csv_files = iniciar_lectura()
 
         #Opciónes de navegación
         match input("\nSeleccione una opción: "):

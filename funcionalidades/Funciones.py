@@ -1,64 +1,104 @@
 import os
 import csv
-from .lectura_recursiva import iniciar_lectura
+from lectura_recursiva import iniciar_lectura
+productos = iniciar_lectura()
 
-DICT_PRODUCTOS = iniciar_lectura()
+# def obtener_csv(ruta_base="Supermercado"):
+#     """
+#     Obtiene todos los archivos CSV en la estructura jerárquica del supermercado
+#     Retorna un diccionario con la ruta relativa como clave y la ruta completa del archivo como valor
+#     """
+#     archivos_csv = {}
+    
+#     if not os.path.exists(ruta_base):
+#         os.makedirs(ruta_base)
+#         return archivos_csv
+    
+#     for root, _, files in os.walk(ruta_base):
+#         for file in files:
+#             if file.endswith('.csv'):
+#                 # Obtener la ruta relativa desde ruta_base
+#                 rel_path = os.path.relpath(root, ruta_base)
+#                 # Usar la ruta relativa como clave y la ruta completa como valor
+#                 archivos_csv[rel_path] = os.path.join(root, file)
+    
+#     return archivos_csv
 
-def obtener_csv(ruta_base="Supermercado"):
-    """
-    Obtiene todos los archivos CSV en la estructura jerárquica del supermercado
-    Retorna un diccionario con la ruta relativa como clave y la ruta completa del archivo como valor
-    """
-    archivos_csv = {}
-    
-    if not os.path.exists(ruta_base):
-        os.makedirs(ruta_base)
-        return archivos_csv
-    
-    for root, _, files in os.walk(ruta_base):
-        for file in files:
-            if file.endswith('.csv'):
-                # Obtener la ruta relativa desde ruta_base
-                rel_path = os.path.relpath(root, ruta_base)
-                # Usar la ruta relativa como clave y la ruta completa como valor
-                archivos_csv[rel_path] = os.path.join(root, file)
-    
-    return archivos_csv
-
-def mostrar_categorias(archivos_csv):
-    """Muestra las categorías disponibles en forma jerárquica.
-    Recibe un diccionario cuya clave es la ruta relativa desde la carpeta base
-    y el valor es la ruta completa al archivo CSV.
-    """
-    print("\nCategorías disponibles:")
-    claves = sorted(archivos_csv.keys())
-    if not claves:
+#Muestra las categorías y subcategorías disponibles de forma jerárquica
+#Recibe una lista de diccionarios anidados
+def mostrar_categorias(estructura, nivel=0):
+    if not estructura:
         print("(vacío)")
         return
-    for i, ruta in enumerate(claves, 1):
-        if ruta == '.' or ruta == os.curdir:
-            display = "(root)"
-        else:
-            niveles = ruta.split(os.sep)
-            display = ' -> '.join(niveles)
-        print(f"{i}. {display}")
+    
+    for bloque in estructura:
+        for nombre, contenido in bloque.items():
+            print("  " * nivel + f"- {nombre}")
+            # Si el contenido es un dict, seguir descendiendo
+            if isinstance(contenido, dict):
+                mostrar_categorias([{k: v} for k, v in contenido.items()], nivel + 1)
 
-def seleccionar_categoria(archivos_csv):
-    """Permite al usuario seleccionar una categoría y retorna la clave (ruta relativa)."""
-    if not archivos_csv:
+#Permite al usuario navegar entre categorías y subcategorías,
+#retornando una referencia al nivel seleccionado
+def seleccionar_categoria(estructura):
+    if not estructura:
         print("No hay categorías disponibles.")
         return None
-    mostrar_categorias(archivos_csv)
-    try:
-        rutas = sorted(archivos_csv.keys())
-        opcion = int(input("\nSeleccione el número de la categoría: ")) - 1
-        if 0 <= opcion < len(rutas):
-            return rutas[opcion]
+
+    actual = estructura  # Nivel actual de navegación
+    ruta = []  # Guarda la ruta elegida, útil para mostrar el contexto
+
+    while True:
+        # Mostrar las categorías disponibles en este nivel
+        opciones = []
+        for bloque in actual:
+            for nombre, contenido in bloque.items():
+                opciones.append((nombre, contenido))
+
+        print("\nCategorías disponibles:")
+        for i, (nombre, _) in enumerate(opciones, 1):
+            print(f"{i}. {nombre}")
+
+        print("0. Volver al nivel anterior" if ruta else "0. Salir")
+
+        try:
+            opcion = int(input("\nSeleccione una opción: "))
+        except ValueError:
+            print("Opción inválida.")
+            continue
+
+        if opcion == 0:
+            if ruta:
+                ruta.pop()  # Subir un nivel
+                # Reconstruir el nivel anterior desde la estructura original
+                actual = estructura
+                for paso in ruta:
+                    for bloque in actual:
+                        if paso in bloque:
+                            contenido = bloque[paso]
+                            actual = (
+                                [{k: v} for k, v in contenido.items()]
+                                if isinstance(contenido, dict)
+                                else contenido
+                            )
+                            break
+            else:
+                return None  # salir completamente
+            continue
+
+        if 1 <= opcion <= len(opciones):
+            nombre, contenido = opciones[opcion - 1]
+            ruta.append(nombre)
+            if isinstance(contenido, dict):
+                # Descender un nivel
+                actual = [{k: v} for k, v in contenido.items()]
+            elif isinstance(contenido, list):
+                # Llegamos a una categoría final con ítems
+                print(f"\n📂 Categoría seleccionada: {' > '.join(ruta)}")
+                return contenido  # Devuelve la lista de ítems
         else:
-            print("Número fuera de rango")
-    except ValueError:
-        print("Opción inválida")
-    return None
+            print("Número fuera de rango.")
+
 
 def leer_csv(archivo):
     """Lee un archivo CSV y retorna una lista de diccionarios"""
@@ -195,3 +235,10 @@ def eliminar_item(archivos_csv):
         print("Item eliminado exitosamente")
     else:
         print("ID no encontrado")
+
+def main():
+    seleccionar_categoria(productos)
+
+
+if __name__ == "__main__":
+    main()
