@@ -1,15 +1,12 @@
 import os
 import csv
-if not __name__ == "__main__":
-    from .lectura_recursiva import iniciar_lectura
-    from .config import NOMBRE_CSV, ENCABEZADOS, RUTA_BASE
-    from .validar_inputs import ingresar_texto, ingresar_numero
-
-productos = iniciar_lectura() #solo para pruebas
+from .lectura_recursiva import iniciar_lectura
+from .config import NOMBRE_CSV, ENCABEZADOS, RUTA_BASE
+from .validar_inputs import ingresar_texto, ingresar_numero, ingresar_id
 
 #Muestra las categorías y subcategorías disponibles de forma jerárquica
 #Recibe una lista de diccionarios anidados
-def mostrar_categorias(estructura, nivel=0):
+def mostrar_categorias(estructura, nivel=0) -> None:
     if not estructura:
         print("(vacío)")
         return
@@ -23,7 +20,7 @@ def mostrar_categorias(estructura, nivel=0):
 
 #Permite al usuario navegar entre categorías y subcategorías,
 #retornando una referencia al nivel seleccionado
-def seleccionar_categoria(estructura):
+def seleccionar_categoria(estructura) -> str:
     if not estructura:
         print("No hay categorías disponibles.")
         return None
@@ -48,7 +45,7 @@ def seleccionar_categoria(estructura):
         print("0. Volver al nivel anterior" if ruta else "0. Salir")
 
         try:
-            opcion = int(input("\nSeleccione una opción: "))
+            opcion = int(input("\nSeleccione una opción: ").strip())
         except ValueError:
             print("Opción inválida.")
             continue
@@ -88,7 +85,7 @@ def seleccionar_categoria(estructura):
 
 #Busca en la estructura jerárquica la categoría indicada por ruta_relativa
 #retorna la lista de productos.
-def leer_csv(ruta):
+def leer_csv(ruta) -> list:
     if not os.path.exists(ruta):
         return []
     
@@ -106,7 +103,7 @@ def leer_csv(ruta):
         return []
 
 #Escribe una lista de diccionarios en el archivo CSV recibido.
-def escribir_csv(ruta, datos, campos):
+def escribir_csv(ruta, datos, campos) -> None:
     try:
         with open(ruta, "w", newline="", encoding="utf-8") as archivo:
             writer = csv.DictWriter(archivo, fieldnames=campos)
@@ -117,7 +114,7 @@ def escribir_csv(ruta, datos, campos):
         print(f"Error al escribir en el archivo '{ruta}': {e}")
 
 #Añade un nuevo producto dentro de la categoría seleccionada
-def alta_item(estructura):
+def alta_item(estructura) -> None:
     ruta_csv = seleccionar_categoria(estructura)
     if not ruta_csv:
         return
@@ -128,8 +125,8 @@ def alta_item(estructura):
 
     nuevo_id = str(ultimo_id + 1)
     nombre = ingresar_texto("Ingrese nombre del producto: ")
-    precio = ingresar_numero("precio")
-    stock = ingresar_numero("stock")
+    precio = ingresar_numero("Ingrese precio del producto: ")
+    stock = ingresar_numero("Ingrese stock del producto: ")
     nuevo_item = {
         'ID': nuevo_id,
         'Nombre': nombre,
@@ -140,7 +137,7 @@ def alta_item(estructura):
     escribir_csv(ruta_csv, datos, campos)
 
 #Muestra los productos de la categoría seleccionada (permite filtrar por nombre)
-def mostrar_items(estructura, filtrado=False):
+def mostrar_items(estructura, filtrado=False) -> None:
     ruta_csv = seleccionar_categoria(estructura)
     if not ruta_csv:
         return
@@ -171,24 +168,18 @@ def mostrar_items(estructura, filtrado=False):
         print(row)
     print("-" * len(header_str))
 
-def modificar_item(archivos_csv):
-    """Modifica un item existente en el CSV seleccionado."""
-    categoria = seleccionar_categoria(archivos_csv)
-    if not categoria:
+#Modifica un item existente en el CSV seleccionado
+def modificar_item(archivos_csv) -> None:
+    archivo = seleccionar_categoria(archivos_csv)
+    if not archivo:
         return
-<<<<<<< HEAD
-    
-    archivo = csv_files[categoria]
-=======
-    archivo = archivos_csv[categoria]
->>>>>>> 711cce4b4aab9bd75becff3049aa30af22af883e
     datos = leer_csv(archivo)
     if not datos:
         print("No hay productos para modificar.")
         return
 
     print("\nItems disponibles:")
-    headers = ['ID', 'Nombre', 'Precio', 'Stock']
+    headers = ENCABEZADOS
     header_str = " | ".join(f"{h:^12}" for h in headers)
     print("-" * len(header_str))
     print(header_str)
@@ -198,7 +189,7 @@ def modificar_item(archivos_csv):
         print(row)
     print("-" * len(header_str))
 
-    id_modificar = input("\nIngrese ID del item a modificar: ")
+    id_modificar = ingresar_id("\nIngresar id del producto a modificar: ")
     item_encontrado = False
     
     for item in datos:
@@ -209,9 +200,13 @@ def modificar_item(archivos_csv):
             print(f"Precio actual: {item['Precio']}")
             print(f"Stock actual: {item['Stock']}")
             
-            nombre = input("\nNuevo nombre (Enter para mantener actual): ").strip()
-            precio = input("Nuevo precio (Enter para mantener actual): ").strip()
-            stock = input("Nuevo stock (Enter para mantener actual): ").strip()
+            try:
+                nombre = input("\nNuevo nombre (Enter para mantener actual): ").strip()
+                precio = input("Nuevo precio (Enter para mantener actual): ").strip()
+                stock = input("Nuevo stock (Enter para mantener actual): ").strip()
+            except ValueError:
+                print("Valores incorrectos. Abortando")
+                return
             
             if nombre: item['Nombre'] = nombre
             if precio: item['Precio'] = precio
@@ -224,24 +219,18 @@ def modificar_item(archivos_csv):
     else:
         print("\nID no encontrado")
 
-def eliminar_item(archivos_csv):
-    """Elimina un item existente en el CSV seleccionado."""
-    categoria = seleccionar_categoria(archivos_csv)
-    if not categoria:
+#Elimina un item existente en el CSV seleccionado
+def eliminar_item(archivos_csv) -> None:
+    archivo = seleccionar_categoria(archivos_csv)
+    if not archivo:
         return
-<<<<<<< HEAD
-    
-    archivo = csv_files[categoria]
-=======
-    archivo = archivos_csv[categoria]
->>>>>>> 711cce4b4aab9bd75becff3049aa30af22af883e
     datos = leer_csv(archivo)
     if not datos:
         print("No hay productos para eliminar.")
         return
 
     print("\nItems disponibles:")
-    headers = ['ID', 'Nombre', 'Precio', 'Stock']
+    headers = ENCABEZADOS
     header_str = " | ".join(f"{h:^12}" for h in headers)
     print("-" * len(header_str))
     print(header_str)
@@ -251,7 +240,7 @@ def eliminar_item(archivos_csv):
         print(row)
     print("-" * len(header_str))
 
-    id_eliminar = input("\nIngrese ID del item a eliminar: ")
+    id_eliminar = ingresar_id("\nIngrese ID del item a eliminar: ")
     item_a_eliminar = None
     for item in datos:
         if item.get('ID') == id_eliminar:
@@ -259,7 +248,7 @@ def eliminar_item(archivos_csv):
             break
 
     if item_a_eliminar:
-        confirmacion = input(f"\n¿Está seguro que desea eliminar '{item_a_eliminar['Nombre']}'? (s/n): ").lower()
+        confirmacion = input(f"\n¿Está seguro que desea eliminar '{item_a_eliminar['Nombre']}'? (s/n): ").lower().strip()
         if confirmacion == 's':
             datos_nuevos = [item for item in datos if item.get('ID') != id_eliminar]
             # Reindexar IDs
@@ -270,17 +259,10 @@ def eliminar_item(archivos_csv):
         else:
             print("\nOperación cancelada")
     else:
-<<<<<<< HEAD
         print("\nID no encontrado")
 
-
-def _parse_precio(valor):
-    """Intenta convertir una cadena de precio a float.
-
-    Nota: se asume que el CSV no contiene símbolos de moneda. Si el
-    separador decimal es coma (ej. "12,50"), lo convertimos a punto.
-    Devuelve None si no se puede convertir.
-    """
+#Intenta convertir una cadena de precio a float
+def parse_precio(valor) -> float:
     if valor is None:
         return None
     try:
@@ -292,9 +274,8 @@ def _parse_precio(valor):
     except Exception:
         return None
 
-
-def _parse_entero(valor):
-    """Convierte a int cuando sea posible. Devuelve None si no se puede."""
+#Convierte a int cuando sea posible. Devuelve None si no se puede
+def parse_entero(valor) -> int:
     if valor is None:
         return None
     try:
@@ -302,20 +283,21 @@ def _parse_entero(valor):
     except Exception:
         return None
 
+#Recorre una lista de diccionarios, obteniendo solo el precio
+def key_precio(item) -> tuple:
+    p = parse_precio(item.get('Precio'))
+    return (p if p is not None else 0.0)
 
-def ordenar_items(csv_files):
-    """Ordena los productos de una categoría por Precio y/o Stock.
+#Recorre una lista de diccionarios, obteniendo solo el stock
+def key_stock(item) -> tuple:
+    s = parse_entero(item.get('Stock'))
+    return (s if s is not None else 0)
 
-    Uso:
-    - Selecciona la categoría
-    - Elige ordenar por Precio, Stock o Ambos
-    - Elige orden ascendente o descendente
-    - Muestra el resultado y pregunta si guardar los cambios (reindexando IDs)
-    """
-    categoria = seleccionar_categoria(csv_files)
-    if not categoria:
+#Ordena los productos de una categoría por Precio y/o Stock
+def ordenar_items(archivos_csv) -> None:
+    archivo = seleccionar_categoria(archivos_csv)
+    if not archivo:
         return
-    archivo = csv_files[categoria]
     datos = leer_csv(archivo)
     if not datos:
         print("No hay productos para ordenar.")
@@ -324,9 +306,8 @@ def ordenar_items(csv_files):
     print("\nOpciones de ordenamiento:")
     print("1. Precio")
     print("2. Stock")
-    print("3. Precio y luego Stock")
-    opcion = input("Elija opción (1/2/3): ").strip()
-    if opcion not in ('1', '2', '3'):
+    opcion = input("Elija opción (1/2): ").strip()
+    if opcion not in ('1', '2'):
         print("Opción inválida. Operación cancelada.")
         return
 
@@ -335,24 +316,13 @@ def ordenar_items(csv_files):
     if orden == 'n':
         reverse = True
 
-    def key_precio(item):
-        p = _parse_precio(item.get('Precio'))
-        return (p if p is not None else 0.0)
-
-    def key_stock(item):
-        s = _parse_entero(item.get('Stock'))
-        return (s if s is not None else 0)
-
     if opcion == '1':
         datos_ordenados = sorted(datos, key=key_precio, reverse=reverse)
     elif opcion == '2':
         datos_ordenados = sorted(datos, key=key_stock, reverse=reverse)
-    else:
-        # ordenar por precio y luego stock
-        datos_ordenados = sorted(datos, key=lambda it: (key_precio(it), key_stock(it)), reverse=reverse)
 
     # Mostrar resultados en tabla
-    headers = ['ID', 'Nombre', 'Precio', 'Stock']
+    headers = ENCABEZADOS
     header_str = " | ".join(f"{h:^12}" for h in headers)
     print("\nResultado del ordenamiento:")
     print("-" * len(header_str))
@@ -373,76 +343,74 @@ def ordenar_items(csv_files):
     else:
         print("\nOperación terminada sin guardar.")
 
-
-def promedio_productos(csv_files):
-    """Calcula el promedio de Precio y Stock.
-
-    Opciones:
-    - Promedio de una categoría seleccionada
-    - Promedio de todas las categorías (global)
-    """
+#Calcula el promedio de Precio y Stock
+def promedio_productos(archivos_csv):
     print("\nCalcular promedio:")
     print("1. Categoría seleccionada")
     print("2. Todas las categorías (global)")
     opcion = input("Elija opción (1/2): ").strip()
 
-    archivos_a_leer = []
+    rutas_csv = []
+
     if opcion == '1':
-        categoria = seleccionar_categoria(csv_files)
-        if not categoria:
+        ruta_csv = seleccionar_categoria(archivos_csv)
+        if not ruta_csv:
             return
-        archivos_a_leer = [csv_files[categoria]]
+        rutas_csv = [ruta_csv]
+
     elif opcion == '2':
-        archivos_a_leer = list(csv_files.values())
-        if not archivos_a_leer:
-            print("No hay archivos para procesar.")
+        rutas_csv = []
+        # Recorre todo el árbol desde la base y agrega todos los archivos productos.csv
+        for root, _, files in os.walk(RUTA_BASE):
+            for f in files:
+                if f.lower() == NOMBRE_CSV.lower():
+                    rutas_csv.append(os.path.join(root, f))
+        if not rutas_csv:
+            print("No se encontraron archivos CSV para procesar.")
             return
     else:
-        print("Opción inválida")
+        print("Opción inválida.")
         return
 
-    total_precio = 0.0
-    count_precio = 0
-    total_stock = 0
-    count_stock = 0
+    total_precio = total_stock = 0.0
+    count_precio = count_stock = 0
 
-    for archivo in archivos_a_leer:
-        datos = leer_csv(archivo)
+    for ruta in rutas_csv:
+        datos = leer_csv(ruta)
         for item in datos:
-            p = _parse_precio(item.get('Precio'))
-            if p is not None:
-                total_precio += p
+            precio = parse_precio(item.get("Precio"))
+            if precio is not None:
+                total_precio += precio
                 count_precio += 1
-            s = _parse_entero(item.get('Stock'))
-            if s is not None:
-                total_stock += s
+
+            stock = parse_entero(item.get("Stock"))
+            if stock is not None:
+                total_stock += stock
                 count_stock += 1
 
+    # Resultados
     if count_precio == 0 and count_stock == 0:
-        print("No se encontraron datos numéricos para calcular promedios.")
+        print("No se encontraron datos numéricos válidos para calcular promedios.")
         return
+
+    print("\nResultados del promedio:")
 
     if count_precio > 0:
         promedio_precio = total_precio / count_precio
-        print(f"\nPromedio de precio: {promedio_precio:.2f} (sobre {count_precio} productos)")
+        print(f"Promedio de precio: {promedio_precio:.2f} (sobre {count_precio} productos)")
     else:
-        print("\nNo hay datos de precio válidos para calcular promedio.")
+        print("No hay datos de precio válidos.")
 
     if count_stock > 0:
         promedio_stock = total_stock / count_stock
         print(f"Promedio de stock: {promedio_stock:.2f} (sobre {count_stock} productos)")
     else:
-        print("No hay datos de stock válidos para calcular promedio.")
-=======
-        print("ID no encontrado")
+        print("No hay datos de stock válidos.")
 
 def main():
-    mostrar_items(productos)
+    #mostrar_items(productos)
+    pass
 
 
 if __name__ == "__main__":
-    from lectura_recursiva import iniciar_lectura
-    from config import NOMBRE_CSV, ENCABEZADOS, RUTA_BASE
-    from validar_inputs import ingresar_texto, ingresar_numero
     main()
->>>>>>> 711cce4b4aab9bd75becff3049aa30af22af883e

@@ -1,8 +1,7 @@
 import os
 import csv
-if not __name__ == "__main__":
-    from .config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
-    from .validar_inputs import texto_correcto, numero_correcto
+from .config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
+from .validar_inputs import texto_correcto, numero_correcto, id_correcto
 
 #Estructura inicial mínima, en caso de que no existan subcarpetas
 ESTRUCTURA_INICIAL = {
@@ -44,25 +43,23 @@ def validar_csv(ruta: str) -> None:
                 return
 
             lineas_validas = []
-            errores = False
             #Valida cada linea, si el formato de valores es correcto
             for i, fila in enumerate(lector, start=2):
-                if (not numero_correcto(fila["ID"]) or
-                    not texto_correcto(fila["Nombre"]) or
-                    not numero_correcto(fila["Precio"]) or
-                    not numero_correcto(fila["Stock"])):
+                if (not id_correcto(fila["ID"].strip()) or
+                    not texto_correcto(fila["Nombre"].strip()) or
+                    not numero_correcto(fila["Precio"].strip()) or
+                    not numero_correcto(fila["Stock"].strip())):
                     print(f"Línea {i} inválida en {ruta}")
-                    errores = True
                 else:
+                    for k, v in fila.items():
+                        fila[k] = v.strip()
                     lineas_validas.append(fila)
 
-        #Si se encontró errores, se sobreescribe el archivo con el encabezado y las lineas correctas
-        if errores:
-            with open(ruta, "w", newline="", encoding="utf-8") as archivo:
-                escritor = csv.DictWriter(archivo, fieldnames=ENCABEZADOS)
-                escritor.writeheader()
-                escritor.writerows(lineas_validas)
-            print(f"Archivo corregido: {ruta}")
+        with open(ruta, "w", newline="", encoding="utf-8") as archivo:
+            escritor = csv.DictWriter(archivo, fieldnames=ENCABEZADOS)
+            escritor.writeheader()
+            escritor.writerows(lineas_validas)
+        print(f"Archivo corregido: {ruta}")
 
     except FileNotFoundError:
         crear_csv(ruta)
@@ -103,7 +100,4 @@ def main():
     iniciar_verificacion()
 
 if __name__ == "__main__":
-    from config import RUTA_BASE, NOMBRE_CSV, ENCABEZADOS
-    from validar_inputs import texto_correcto, numero_correcto
-
     main()
