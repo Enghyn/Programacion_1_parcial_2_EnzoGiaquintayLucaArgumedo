@@ -45,7 +45,7 @@ def construir_jerarquia(base: str) -> list[dict]:
     return jerarquia
 
 def iniciar_lectura():
-    construir_jerarquia(RUTA_BASE)
+    return construir_jerarquia(RUTA_BASE)
     
 def main():
     jerarquia = iniciar_lectura()
